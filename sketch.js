@@ -8,12 +8,12 @@ let gameState;
 let outfitSelectionScreen;
 let gameScreen;
 function preload() {
-  coneObject = loadImage("TRAFFIC_CONES.png");
-  welcomeScreen = loadImage("Artboard_1.png");
-  outfitSelectionScreen = loadImage("Artboard_2.png");
-  outfit1 = loadImage("Asset_2.png");
-  outfit2 = loadImage("Asset_3.png");
-  gameScreen = loadImage("DQPF8MhWAAIMO0u.png");
+  coneObject = loadImage("./TRAFFIC_CONES.png");
+  welcomeScreen = loadImage("./Artboard_1.png");
+  outfitSelectionScreen = loadImage("./Artboard_2.png");
+  outfit1 = loadImage("./Asset_2.png");
+  outfit2 = loadImage("./Asset_3.png");
+  gameScreen = loadImage("./DQPF8MhWAAIMO0u.png");
 }
 
 function setup() {
