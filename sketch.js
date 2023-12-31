@@ -10,9 +10,20 @@ let gameScreen;
 let gameoverScreen;
 let characterWidth;
 let characterHeight;
-let bgmusic;
-let music;
+// let bgmusic;
+// let music;
 let score;
+let welcomeX;
+let welcomeY;
+let welcomeHeight;
+let welcomeWidth;
+let selectionRatio;
+let selectionWidth;
+let selectionHeight;
+let gameoverX;
+let gameoverY;
+let gameoverHeight;
+let gameoverWidth;
 
 function preload() {
   coneObject = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644daab429a82149643_TRAFFIC_CONES.png");
@@ -22,7 +33,7 @@ function preload() {
   outfit2 = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644656dfadeef871457_outfit2.png");
   gameScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e64409103cb0440fbd6c_background.png");
   gameoverScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644dbb6f549d6da9277_gameover.png");
-  bgmusic = loadSound("https://cdn.discordapp.com/attachments/1164579381864321134/1190854716993847346/Zones.mp3");
+  // bgmusic = loadSound("https://cdn.discordapp.com/attachments/1164579381864321134/1190854716993847346/Zones.mp3");
 }
 
 function setup() {
@@ -31,6 +42,17 @@ function setup() {
   characterHeight = height/3.375;
   gameState = "welcome";
   music = false;
+  welcomeX = width/16;
+  welcomeY= height/16;
+  welcomeHeight = height - height/6;
+  welcomeWidth = width/2;
+  selectionRatio = (width+height) / 15;
+  selectionWidth = width/4.5;
+  selectionHeight = height/1.7;
+  gameoverX = width/8;
+  gameoverY = height/9;
+  gameoverHeight = height/1.28;
+  gameoverWidth = width/2;
 }
 
 function draw() {
@@ -57,16 +79,12 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
-    if(!music){
-      bgmusic.loop();
-      music = true;
-    }
-    let sizeX = width/16;
-    let sizeY = height/16;
-    let newHeight = height - height/6;
-    let newWidth = width/2;
-
-    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
+    // if(!music){
+    //   bgmusic.loop();
+    //   music = true;
+    // }
+    
+    if(mouseX > welcomeWidth - welcomeX && mouseX < welcomeWidth + welcomeX && mouseY > welcomeHeight - welcomeY && mouseY < welcomeHeight + welcomeY){
       gameState = "outfitSelection";
       loop();
     }
@@ -74,14 +92,11 @@ function mouseClicked() {
 
   //outfit screen
   else if (gameState === "outfitSelection" && !character) {
-    let screenRatio = (width+height) / 15;
-    let newWidth = width/4.5;
-    let newHeight = height/1.7;
-    if (mouseX > newWidth-screenRatio && mouseX < newWidth + screenRatio && mouseY > newHeight-screenRatio && mouseY < newHeight + screenRatio) {
+    if (mouseX > selectionWidth-selectionRatio && mouseX < selectionWidth + selectionRatio && mouseY > selectionHeight-selectionRatio && mouseY < selectionHeight + selectionRatio) {
       character = outfit2;
       startGame();
       loop();
-    } else if (mouseX > width-newWidth-screenRatio-100 && mouseX < width-newWidth+screenRatio-100 && mouseY > height-newHeight-screenRatio && mouseY < height-newHeight+screenRatio) {
+    } else if (mouseX > width-selectionWidth-selectionRatio-100 && mouseX < width-selectionWidth+selectionRatio-100 && mouseY > height-selectionHeight-selectionRatio && mouseY < height-selectionHeight+selectionRatio) {
       character = outfit1;
       startGame();
       loop();
@@ -90,11 +105,7 @@ function mouseClicked() {
 
   //gameover screen
   else if (gameState === "gameOver") {
-    let sizeX = width/8;
-    let sizeY = height/9;
-    let newHeight = height/1.28;
-    let newWidth = width/2;
-    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
+    if(mouseX > gameoverWidth - gameoverX && mouseX < gameoverWidth + gameoverX && mouseY > gameoverHeight - gameoverY && mouseY < gameoverHeight + gameoverY){
       resetGame();
       loop();
     }
@@ -105,23 +116,24 @@ function mouseMoved() {
   mouseX = constrain(mouseX, 0, width - 50);
   mouseY = constrain(mouseY, 0, height - 50);
   if(gameState === "welcome"){
-    let sizeX = width/16;
-    let sizeY = height/16;
-    let newHeight = height - height/6;
-    let newWidth = width/2;
-    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
+    if(mouseX > welcomeWidth - welcomeX && mouseX < welcomeWidth + welcomeX && mouseY > welcomeHeight - welcomeY && mouseY < welcomeHeight + welcomeY){
       cursor("pointer");
     }else{
       cursor(ARROW);
     }
-  }else if(gameState === "playing"){
+  }else if(gameState === "outfitSelection"){
+    if (mouseX > selectionWidth-selectionRatio && mouseX < selectionWidth + selectionRatio && mouseY > selectionHeight-selectionRatio && mouseY < selectionHeight + selectionRatio) {
+      cursor("pointer");
+    }else if (mouseX > width-selectionWidth-selectionRatio-100 && mouseX < width-selectionWidth+selectionRatio-100 && mouseY > height-selectionHeight-selectionRatio && mouseY < height-selectionHeight+selectionRatio) {
+      cursor("pointer");
+    }else{
+      cursor(ARROW);
+    }
+  }
+  else if(gameState === "playing"){
     noCursor();
   }else if(gameState === "gameOver"){
-    let sizeX = width/8;
-    let sizeY = height/9;
-    let newHeight = height/1.28;
-    let newWidth = width/2;
-    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight && mouseY < newHeight + sizeY){
+    if(mouseX > gameoverWidth - gameoverX && mouseX < gameoverWidth + gameoverX && mouseY > gameoverHeight && mouseY < gameoverHeight + gameoverY){
       cursor("pointer");
     }else{
       cursor(ARROW);
@@ -161,6 +173,7 @@ function gamePlay() {
   for (let cone of cones) {
     displayCone(cone);
     moveCone(cone);
+    cone.speed += width/200000;
     checkCollision(cone);
   }
   
@@ -170,8 +183,8 @@ function gamePlay() {
 function createCone(i) {
   return {
     x: width/4*i + width,
-    y: random(height),
-    speed: width/65,
+    y: random(height)/0.9 + height/10,
+    speed: width/100,
   };
 }
 
