@@ -10,8 +10,9 @@ let gameScreen;
 let gameoverScreen;
 let characterWidth;
 let characterHeight;
-// let bgmusic;
-// let music;
+let bgmusic;
+let music;
+let score;
 
 function preload() {
   coneObject = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644daab429a82149643_TRAFFIC_CONES.png");
@@ -21,7 +22,7 @@ function preload() {
   outfit2 = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644656dfadeef871457_outfit2.png");
   gameScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e64409103cb0440fbd6c_background.png");
   gameoverScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644dbb6f549d6da9277_gameover.png");
-  // bgmusic = loadSound("./assets/Zones.mp3");
+  bgmusic = loadSound("https://cdn.discordapp.com/attachments/1164579381864321134/1190854716993847346/Zones.mp3");
 }
 
 function setup() {
@@ -35,12 +36,15 @@ function setup() {
 function draw() {
   if(gameState === "welcome"){
     welcome();
+    noLoop();
   } else if (gameState === "outfitSelection") {
     setupScreen();
+    noLoop();
   } else if (gameState === "playing") {
     gamePlay();
   } else if (gameState === "gameOver") {
     displayGameOver();
+    noLoop();
   }
 }
 
@@ -53,10 +57,10 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
-    // if(!music){
-    //   bgmusic.loop();
-    //   music = true;
-    // }
+    if(!music){
+      bgmusic.loop();
+      music = true;
+    }
     let sizeX = width/16;
     let sizeY = height/16;
     let newHeight = height - height/6;
@@ -64,8 +68,8 @@ function mouseClicked() {
 
     if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
       gameState = "outfitSelection";
+      loop();
     }
-     
   }
 
   //outfit screen
@@ -76,9 +80,11 @@ function mouseClicked() {
     if (mouseX > newWidth-screenRatio && mouseX < newWidth + screenRatio && mouseY > newHeight-screenRatio && mouseY < newHeight + screenRatio) {
       character = outfit2;
       startGame();
+      loop();
     } else if (mouseX > width-newWidth-screenRatio-100 && mouseX < width-newWidth+screenRatio-100 && mouseY > height-newHeight-screenRatio && mouseY < height-newHeight+screenRatio) {
       character = outfit1;
       startGame();
+      loop();
     }
   }
 
@@ -90,6 +96,7 @@ function mouseClicked() {
     let newWidth = width/2;
     if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
       resetGame();
+      loop();
     }
   }
 }
@@ -130,8 +137,6 @@ function welcome(){
 //game start screen-----------------------------------------------------------------------------------------------------------------------
 function setupScreen() {
   background(outfitSelectionScreen);
-  // Instructions
-  textSize(20);
 }
 
 //gameplay screen---------------------------------------------------------------------------------------------------------------------------
@@ -142,12 +147,17 @@ function startGame() {
     cones.push(cone);
   }
   gameState = "playing";
+  score = 0;
+  setInterval(()=>{
+    score++;
+  },1000);
 }
 
 
 function gamePlay() {
   background(gameScreen);
-
+  textSize(50);
+  text(score, width/2, height/2);
   for (let cone of cones) {
     displayCone(cone);
     moveCone(cone);
@@ -155,7 +165,6 @@ function gamePlay() {
   }
   
   image(character, mouseX-characterWidth/2, mouseY-characterHeight/2, characterWidth, characterHeight);
-  circle(mouseX,mouseY,characterWidth,characterHeight);
 }
 
 function createCone(i) {
@@ -168,7 +177,6 @@ function createCone(i) {
 
 function displayCone(cone) {
   image(coneObject, cone.x-characterWidth/2, cone.y-characterHeight/2, characterWidth, characterHeight);
-  circle(cone.x,cone.y,characterWidth,characterHeight);
 }
 
 function moveCone(cone) {
