@@ -183,7 +183,7 @@ function gamePlay() {
 function createCone(i) {
   return {
     x: width/4*i + width,
-    y: random(height)/0.9 + height/10,
+    y: random(height)*0.9 + height/10,
     speed: width/100,
   };
 }
@@ -197,7 +197,7 @@ function moveCone(cone) {
 
   if (cone.x < 0) {
     cone.x = width;
-    cone.y = random(height);
+    cone.y = random(height)*0.9 + height/10;
   }
 }
 
