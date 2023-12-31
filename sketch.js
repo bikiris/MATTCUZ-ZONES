@@ -8,19 +8,20 @@ let gameState;
 let outfitSelectionScreen;
 let gameScreen;
 let gameoverScreen;
-let bgmusic;
 let characterWidth;
 let characterHeight;
+// let bgmusic;
+// let music;
 
 function preload() {
-  coneObject = loadImage("./assets/TRAFFIC_CONES.png");
-  welcomeScreen = loadImage("./assets/welcome.png");
-  outfitSelectionScreen = loadImage("./assets/selection.png");
-  outfit1 = loadImage("./assets/outfit1.png");
-  outfit2 = loadImage("./assets/outfit2.png");
-  gameScreen = loadImage("./assets/background.png");
-  gameoverScreen = loadImage("./assets/gameover.png");
-  bgmusic = loadSound("./assets/Zones.mp3");
+  coneObject = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644daab429a82149643_TRAFFIC_CONES.png");
+  welcomeScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e6444b3e0306b4c23a23_welcome.png");
+  outfitSelectionScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e64464aed4b6f4301079_selection.png");
+  outfit1 = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e6443df5ab48d5112597_outfit1.png");
+  outfit2 = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644656dfadeef871457_outfit2.png");
+  gameScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e64409103cb0440fbd6c_background.png");
+  gameoverScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644dbb6f549d6da9277_gameover.png");
+  // bgmusic = loadSound("./assets/Zones.mp3");
 }
 
 function setup() {
@@ -28,7 +29,7 @@ function setup() {
   characterWidth = width/12;
   characterHeight = height/3.375;
   gameState = "welcome";
-  
+  music = false;
 }
 
 function draw() {
@@ -52,7 +53,10 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
-    bgmusic.loop();
+    // if(!music){
+    //   bgmusic.loop();
+    //   music = true;
+    // }
     let sizeX = width/16;
     let sizeY = height/16;
     let newHeight = height - height/6;
