@@ -10,8 +10,8 @@ let gameScreen;
 let gameoverScreen;
 let characterWidth;
 let characterHeight;
-// let bgmusic;
-// let music;
+let bgmusic;
+let music;
 let score;
 let welcomeX;
 let welcomeY;
@@ -33,7 +33,7 @@ function preload() {
   outfit2 = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644656dfadeef871457_outfit2.png");
   gameScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e64409103cb0440fbd6c_background.png");
   gameoverScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644dbb6f549d6da9277_gameover.png");
-  // bgmusic = loadSound("https://cdn.discordapp.com/attachments/1164579381864321134/1190854716993847346/Zones.mp3");
+  bgmusic = loadSound("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6591c908a055423e4ed74037_Zones.txt");
 }
 
 function setup() {
@@ -79,10 +79,10 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
-    // if(!music){
-    //   bgmusic.loop();
-    //   music = true;
-    // }
+    if(!music){
+      bgmusic.loop();
+      music = true;
+    }
     
     if(mouseX > welcomeWidth - welcomeX && mouseX < welcomeWidth + welcomeX && mouseY > welcomeHeight - welcomeY && mouseY < welcomeHeight + welcomeY){
       gameState = "outfitSelection";
