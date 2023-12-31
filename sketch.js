@@ -7,25 +7,29 @@ let outfit2;
 let gameState;
 let outfitSelectionScreen;
 let gameScreen;
+let characterWidth;
+let characterHeight;
+
 function preload() {
-  coneObject = loadImage("./TRAFFIC_CONES.png");
-  welcomeScreen = loadImage("./Artboard_1.png");
-  outfitSelectionScreen = loadImage("./Artboard_2.png");
-  outfit1 = loadImage("./Asset_2.png");
-  outfit2 = loadImage("./Asset_3.png");
-  gameScreen = loadImage("./DQPF8MhWAAIMO0u.png");
+  coneObject = loadImage("./assets/TRAFFIC_CONES.png");
+  welcomeScreen = loadImage("./assets/welcome.png");
+  outfitSelectionScreen = loadImage("./assets/selection.png");
+  outfit1 = loadImage("./assets/outfit1.png");
+  outfit2 = loadImage("./assets/outfit2.png");
+  gameScreen = loadImage("./assets/background.png");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  characterWidth = width/12;
+  characterHeight = height/6;
   gameState = "welcome";
 }
 
 function draw() {
   if(gameState === "welcome"){
     welcome();
-  }
-  else if (gameState === "outfitSelection") {
+  } else if (gameState === "outfitSelection") {
     setupScreen();
   } else if (gameState === "playing") {
     gamePlay();
@@ -44,22 +48,38 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
+    let sizeX = width/16;
+    let sizeY = height/18;
+    let newHeight = height - height/7;
+    let newWidth = width/2;
+    console.log(newHeight);
+    console.log(newHeight-sizeY);
+    console.log(newHeight+sizeY);
+    console.log(newWidth-sizeX);
+    console.log(newWidth+sizeX);
+
+    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
       gameState = "outfitSelection";
+    }
+     
   }
 
   //outfit screen
-  if (gameState === "outfitSelection" && !character) {
-    if (mouseX > width / 4 && mouseX < width / 4 + 100 && mouseY > height / 2 && mouseY < height / 2 + 100) {
+  else if (gameState === "outfitSelection" && !character) {
+    let screenRatio = (width+height) / 15;
+    let newWidth = width/4.5;
+    let newHeight = height/1.7;
+    if (mouseX > newWidth-screenRatio && mouseX < newWidth + screenRatio && mouseY > newHeight-screenRatio && mouseY < newHeight + screenRatio) {
       character = outfit1;
       startGame();
-    } else if (mouseX > (3 * width) / 4 - 100 && mouseX < (3 * width) / 4 && mouseY > height / 2 && mouseY < height / 2 + 100) {
+    } else if (mouseX > width-newWidth-screenRatio-100 && mouseX < width-newWidth+screenRatio-100 && mouseY > height-newHeight-screenRatio && mouseY < height-newHeight+screenRatio) {
       character = outfit2;
       startGame();
     }
   }
 
   //gameover screen
-  if (gameState === "gameOver" && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 &&
+  else if (gameState === "gameOver" && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 &&
     mouseY > height / 2 + 50 && mouseY < height / 2 + 100) {
     resetGame();
   }
@@ -68,73 +88,82 @@ function mouseClicked() {
 function mouseMoved() {
   mouseX = constrain(mouseX, 0, width - 50);
   mouseY = constrain(mouseY, 0, height - 50);
+  if(gameState === "welcome"){
+    let sizeX = width/16;
+    let sizeY = height/18;
+    let newHeight = height - height/7;
+    let newWidth = width/2;
+
+    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
+      cursor("pointer");
+    }else{
+      cursor(ARROW);
+    }
+  }
 }
 
 //game pre start screen-------------------------------------------------------------------------------------------------------------------
 function welcome(){
   background(welcomeScreen);
-
-  text("Click anywhere to start", width/2, height/2);
 }
 
 //game start screen-----------------------------------------------------------------------------------------------------------------------
 function setupScreen() {
   background(outfitSelectionScreen);
-
-
   // Instructions
   textSize(20);
-  text("Click on an outfit to select", width / 2, (3 * height) / 4);
 }
 
 //gameplay screen---------------------------------------------------------------------------------------------------------------------------
 function startGame() {
   cones = []; // Reset cones array
   for (let i = 0; i < 4; i++) {
-    let cop = createCop();
-    cones.push(cop);
+    let cone = createCone();
+    cones.push(cone);
   }
   gameState = "playing";
 }
 
+
 function gamePlay() {
   background(gameScreen);
 
-  for (let cop of cones) {
-    displayCop(cop);
-    moveCop(cop);
-    checkCollision(cop);
+  for (let cone of cones) {
+    displayCone(cone);
+    moveCone(cone);
+    checkCollision(cone);
   }
 
-  image(character, mouseX-50, mouseY-50, 100, 100);
-  circle(mouseX,mouseY,90,90);
+  image(character, mouseX-characterWidth/2, mouseY-characterHeight/2, characterWidth, characterHeight);
+  circle(mouseX,mouseY,characterWidth,mouseY-characterHeight);
 }
 
-function createCop() {
+function createCone() {
   return {
-    x: random(width),
-    y: random(height),
-    speed: 16,
+    x: random(width)+width,
+    y: random(height)+height,
+    speed: width/50,
   };
 }
 
-function displayCop(cop) {
-  image(coneObject, cop.x-60, cop.y-60, 130, 130);
-  circle(cop.x,cop.y,80,80)
+function displayCone(cone) {
+  image(coneObject, cone.x-characterWidth/2, cone.y-characterHeight/2, characterWidth, characterHeight);
+  circle(cone.x,cone.y,characterWidth,mouseY-characterHeight);
 }
 
-function moveCop(cop) {
-  cop.x -= cop.speed;
+function moveCone(cone) {
+  cone.x -= cone.speed;
 
-  if (cop.x < 0) {
-    cop.x = width;
-    cop.y = random(height);
+  if (cone.x < 0) {
+    cone.x = width;
+    cone.y = random(height);
   }
 }
 
-function checkCollision(cop) {
-  let d = dist(cop.x, cop.y, mouseX, mouseY);
-  if (d < 90) {
+function checkCollision(cone) {
+  let d = dist(cone.x, cone.y, mouseX, mouseY);
+  let minDist = (characterHeight+characterWidth)/2;
+  if (d < minDist) {
     gameState = "gameOver";
   }
 }
