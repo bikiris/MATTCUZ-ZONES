@@ -12,6 +12,12 @@ let characterWidth;
 let characterHeight;
 let bgmusic;
 let music;
+let musicX;
+let musicY;
+let musicOff;
+let musicOn;
+let musicSizeX;
+let musicSizeY;
 let score;
 let welcomeX;
 let welcomeY;
@@ -34,6 +40,8 @@ function preload() {
   gameScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e64409103cb0440fbd6c_background.png");
   gameoverScreen = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6590e644dbb6f549d6da9277_gameover.png");
   bgmusic = loadSound("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6591c908a055423e4ed74037_Zones.txt");
+  musicOff = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6591d97bd026cf5470f73d6e_Asset_1.png");
+  musicOn = loadImage("https://uploads-ssl.webflow.com/65794514dea4232af4769843/6591d9845f4bebbe3e77a4da_Asset_4.png");
 }
 
 function setup() {
@@ -53,6 +61,11 @@ function setup() {
   gameoverY = height/9;
   gameoverHeight = height/1.28;
   gameoverWidth = width/2;
+  musicX = width*0.85;
+  musicY = height/8;
+  musicSizeX = width/10;
+  musicSizeY = height/7;
+  music = false;
 }
 
 function draw() {
@@ -79,9 +92,16 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
-    if(!music){
-      bgmusic.loop();
-      music = true;
+    if(mouseX > musicX - musicSizeX && mouseX < musicX + musicSizeX && mouseY > musicY - musicSizeY && mouseY < musicY + musicSizeY){
+      if(!music){
+        bgmusic.play();
+        image(musicOn,musicX,musicY,musicSizeX,musicSizeY);
+        music = true;
+      }else{
+        bgmusic.pause();
+        image(musicOff,musicX,musicY,musicSizeX,musicSizeY);
+        music = false;
+      }
     }
     
     if(mouseX > welcomeWidth - welcomeX && mouseX < welcomeWidth + welcomeX && mouseY > welcomeHeight - welcomeY && mouseY < welcomeHeight + welcomeY){
@@ -116,11 +136,13 @@ function mouseMoved() {
   mouseX = constrain(mouseX, 0, width - 50);
   mouseY = constrain(mouseY, 0, height - 50);
   if(gameState === "welcome"){
-    if(mouseX > welcomeWidth - welcomeX && mouseX < welcomeWidth + welcomeX && mouseY > welcomeHeight - welcomeY && mouseY < welcomeHeight + welcomeY){
+    if(mouseX > welcomeWidth - welcomeX && mouseX < welcomeWidth + welcomeX && mouseY > welcomeHeight - welcomeY && mouseY < welcomeHeight + welcomeY
+      || mouseX > musicX - musicSizeX && mouseX < musicX + musicSizeX && mouseY > musicY - musicSizeY && mouseY < musicY + musicSizeY){
       cursor("pointer");
     }else{
       cursor(ARROW);
     }
+    
   }else if(gameState === "outfitSelection"){
     if (mouseX > selectionWidth-selectionRatio && mouseX < selectionWidth + selectionRatio && mouseY > selectionHeight-selectionRatio && mouseY < selectionHeight + selectionRatio) {
       cursor("pointer");
@@ -144,6 +166,12 @@ function mouseMoved() {
 //game pre start screen-------------------------------------------------------------------------------------------------------------------
 function welcome(){
   background(welcomeScreen);
+  if(music){
+    image(musicOn,musicX,musicY,musicSizeX,musicSizeY);
+  }else{
+    image(musicOff,musicX,musicY,musicSizeX,musicSizeY);
+  }
+  
 }
 
 //game start screen-----------------------------------------------------------------------------------------------------------------------
