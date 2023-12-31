@@ -7,6 +7,8 @@ let outfit2;
 let gameState;
 let outfitSelectionScreen;
 let gameScreen;
+let gameoverScreen;
+let bgmusic;
 let characterWidth;
 let characterHeight;
 
@@ -17,13 +19,16 @@ function preload() {
   outfit1 = loadImage("./assets/outfit1.png");
   outfit2 = loadImage("./assets/outfit2.png");
   gameScreen = loadImage("./assets/background.png");
+  gameoverScreen = loadImage("./assets/gameover.png");
+  bgmusic = loadSound("./assets/Zones.mp3");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   characterWidth = width/12;
-  characterHeight = height/6;
+  characterHeight = height/3.375;
   gameState = "welcome";
+  
 }
 
 function draw() {
@@ -35,7 +40,6 @@ function draw() {
     gamePlay();
   } else if (gameState === "gameOver") {
     displayGameOver();
-    displayPlayAgainButton();
   }
 }
 
@@ -48,15 +52,11 @@ function resetGame() {
 function mouseClicked() {
   //welcome screen
   if(gameState === "welcome"){
+    bgmusic.loop();
     let sizeX = width/16;
-    let sizeY = height/18;
-    let newHeight = height - height/7;
+    let sizeY = height/16;
+    let newHeight = height - height/6;
     let newWidth = width/2;
-    console.log(newHeight);
-    console.log(newHeight-sizeY);
-    console.log(newHeight+sizeY);
-    console.log(newWidth-sizeX);
-    console.log(newWidth+sizeX);
 
     if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
       gameState = "outfitSelection";
@@ -70,18 +70,23 @@ function mouseClicked() {
     let newWidth = width/4.5;
     let newHeight = height/1.7;
     if (mouseX > newWidth-screenRatio && mouseX < newWidth + screenRatio && mouseY > newHeight-screenRatio && mouseY < newHeight + screenRatio) {
-      character = outfit1;
+      character = outfit2;
       startGame();
     } else if (mouseX > width-newWidth-screenRatio-100 && mouseX < width-newWidth+screenRatio-100 && mouseY > height-newHeight-screenRatio && mouseY < height-newHeight+screenRatio) {
-      character = outfit2;
+      character = outfit1;
       startGame();
     }
   }
 
   //gameover screen
-  else if (gameState === "gameOver" && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 &&
-    mouseY > height / 2 + 50 && mouseY < height / 2 + 100) {
-    resetGame();
+  else if (gameState === "gameOver") {
+    let sizeX = width/8;
+    let sizeY = height/9;
+    let newHeight = height/1.28;
+    let newWidth = width/2;
+    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
+      resetGame();
+    }
   }
 }
 
@@ -90,11 +95,22 @@ function mouseMoved() {
   mouseY = constrain(mouseY, 0, height - 50);
   if(gameState === "welcome"){
     let sizeX = width/16;
-    let sizeY = height/18;
-    let newHeight = height - height/7;
+    let sizeY = height/16;
+    let newHeight = height - height/6;
     let newWidth = width/2;
-
     if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight - sizeY && mouseY < newHeight + sizeY){
+      cursor("pointer");
+    }else{
+      cursor(ARROW);
+    }
+  }else if(gameState === "playing"){
+    noCursor();
+  }else if(gameState === "gameOver"){
+    let sizeX = width/8;
+    let sizeY = height/9;
+    let newHeight = height/1.28;
+    let newWidth = width/2;
+    if(mouseX > newWidth - sizeX && mouseX < newWidth + sizeX && mouseY > newHeight && mouseY < newHeight + sizeY){
       cursor("pointer");
     }else{
       cursor(ARROW);
@@ -118,7 +134,7 @@ function setupScreen() {
 function startGame() {
   cones = []; // Reset cones array
   for (let i = 0; i < 4; i++) {
-    let cone = createCone();
+    let cone = createCone(i+1);
     cones.push(cone);
   }
   gameState = "playing";
@@ -133,22 +149,22 @@ function gamePlay() {
     moveCone(cone);
     checkCollision(cone);
   }
-
+  
   image(character, mouseX-characterWidth/2, mouseY-characterHeight/2, characterWidth, characterHeight);
-  circle(mouseX,mouseY,characterWidth,mouseY-characterHeight);
+  circle(mouseX,mouseY,characterWidth,characterHeight);
 }
 
-function createCone() {
+function createCone(i) {
   return {
-    x: random(width)+width,
-    y: random(height)+height,
-    speed: width/50,
+    x: width/4*i + width,
+    y: random(height),
+    speed: width/65,
   };
 }
 
 function displayCone(cone) {
   image(coneObject, cone.x-characterWidth/2, cone.y-characterHeight/2, characterWidth, characterHeight);
-  circle(cone.x,cone.y,characterWidth,mouseY-characterHeight);
+  circle(cone.x,cone.y,characterWidth,characterHeight);
 }
 
 function moveCone(cone) {
@@ -162,7 +178,7 @@ function moveCone(cone) {
 
 function checkCollision(cone) {
   let d = dist(cone.x, cone.y, mouseX, mouseY);
-  let minDist = (characterHeight+characterWidth)/2;
+  let minDist = (characterHeight+characterWidth)/3;
   if (d < minDist) {
     gameState = "gameOver";
   }
@@ -170,20 +186,7 @@ function checkCollision(cone) {
 
 //gameover screen---------------------------------------------------------------------------------------------------------------
 function displayGameOver() {
-  background(255, 0, 0);
-  textSize(32);
-  fill(255);
-  textAlign(CENTER, CENTER);
-  text("Game Over", width / 2, height / 2);
-}
-
-function displayPlayAgainButton() {
-  fill(0, 255, 0);
-  rect(width / 2 - 100, height / 2 + 50, 200, 50, 10);
-  fill(255);
-  textSize(20);
-  textAlign(CENTER, CENTER);
-  text("Play Again", width / 2, height / 2 + 75);
+  background(gameoverScreen);
 }
 
 
